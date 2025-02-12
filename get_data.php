@@ -1,39 +1,32 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *"); 
+header("Content-Type: application/json; charset=UTF-8");
 
-include "db.php";
+$servername = "your_server";
+$username = "your_username";
+$password = "your_password";
+$database = "your_database";
 
-$sql = "
-    SELECT users.id, users.first_name, users.last_name, users.email, 
-           posts.id AS post_id, posts.content, posts.created_at
-    FROM users
-    LEFT JOIN posts ON users.id = posts.user_id
-";
+// Create connection
+$conn = new mysqli($servername, $username, $password, $database);
+
+// Check connection
+if ($conn->connect_error) {
+    die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+}
+
+$sql = "SELECT id, email, password, role,  first_name, last_name, avatar_url, profile_bio, created_at FROM users";
 $result = $conn->query($sql);
 
 $data = [];
-while ($row = $result->fetch_assoc()) {
-    $userId = $row['id'];
 
-    if (!isset($data[$userId])) {
-        $data[$userId] = [
-            "id" => $row["id"],
-            "first_name" => $row["first_name"],
-            "last_name" => $row["last_name"],
-            "email" => $row["email"],
-            "posts" => []
-        ];
-    }
-
-    if (!empty($row["post_id"])) {
-        $data[$userId]["posts"][] = [
-            "post_id" => $row["post_id"],
-            "content" => $row["content"],
-            "created_at" => $row["created_at"]
-        ];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
     }
 }
 
-echo json_encode(array_values($data));
+echo json_encode($data);
+
+$conn->close();
 ?>

@@ -4,7 +4,7 @@ header("Content-Type: application/json");
 
 include "db.php";
 
-$sql = "SELECT id, email, password, role,  first_name, last_name, avatar_url, profile_bio, communities_followed, communities_created, posts_created, comments_created, messages, created_at FROM users";
+$sql = "SELECT id, email, password, role,  first_name, last_name, avatar_url, profile_bio, created_at FROM users";
 $result = $conn->query($sql);
 
 $users = [];
