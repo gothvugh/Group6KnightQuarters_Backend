@@ -1,6 +1,8 @@
 <?php
 require 'db.php';
 
+session_start();
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -16,7 +18,7 @@ $email = htmlspecialchars(strip_tags($data["email"]));
 $password = $data["password"];
 
 // Check if user exists
-$query = "SELECT id, password FROM users WHERE email = ?";
+$query = "SELECT id, password, first_name, last_name, avatar_url, profile_bio FROM users WHERE email = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $email);
 $stmt->execute();
@@ -27,7 +29,7 @@ if ($stmt->num_rows === 0) {
     exit;
 }
 
-$stmt->bind_result($user_id, $hashed_password);
+$stmt->bind_result($user_id, $hashed_password, $first_name, $last_name, $avatar_url, $profile_bio);
 $stmt->fetch();
 
 if (!password_verify($password, $hashed_password)) {
@@ -35,8 +37,17 @@ if (!password_verify($password, $hashed_password)) {
     exit;
 }
 
+$user_data = [
+    "id" => $user_id,
+    "first_name" => $first_name,
+    "last_name" => $last_name,
+    "email" => $email,
+    "avatar_url" => $avatar_url,
+    "profile_bio" => $profile_bio,
+];
+
 // Login successful
-echo json_encode(["success" => true, "message" => "Login successful!", "user_id" => $user_id]);
+echo json_encode(["success" => true, "message" => "Login successful!", "user" => $user_data]);
 
 $stmt->close();
 $conn->close();
