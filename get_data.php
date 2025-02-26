@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 include "db.php";
 
-$sql = "SELECT id, email, password, role,  first_name, last_name, avatar_url, profile_bio, created_at FROM users";
+$sql = "SELECT id, email, password, role,  first_name, last_name, avatar_url, profile_bio, major, created_at FROM users";
 $result = $conn->query($sql);
 
 $data = [];

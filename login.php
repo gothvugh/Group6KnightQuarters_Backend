@@ -18,7 +18,7 @@ $email = htmlspecialchars(strip_tags($data["email"]));
 $password = $data["password"];
 
 // Check if user exists
-$query = "SELECT id, password, first_name, last_name, avatar_url, profile_bio FROM users WHERE email = ?";
+$query = "SELECT id, password, first_name, last_name, avatar_url, profile_bio, major FROM users WHERE email = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $email);
 $stmt->execute();
@@ -29,7 +29,7 @@ if ($stmt->num_rows === 0) {
     exit;
 }
 
-$stmt->bind_result($user_id, $hashed_password, $first_name, $last_name, $avatar_url, $profile_bio);
+$stmt->bind_result($user_id, $hashed_password, $first_name, $last_name, $avatar_url, $profile_bio, $major);
 $stmt->fetch();
 
 if (!password_verify($password, $hashed_password)) {
@@ -44,6 +44,7 @@ $user_data = [
     "email" => $email,
     "avatar_url" => $avatar_url,
     "profile_bio" => $profile_bio,
+    "major" => $major
 ];
 
 // Login successful
