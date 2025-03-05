@@ -6,7 +6,7 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 // Fetch all communities
-$query = "SELECT id, description, community_name, creator_id, created_at FROM communities";
+$query = "SELECT id, description, community_name AS name, creator_id, created_at FROM communities";
 $result = $conn->query($query);
 
 if ($result->num_rows > 0) {
